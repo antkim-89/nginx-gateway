@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3. Admin Dashboard | Master Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; }
+        .card { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+        .card:hover { transform: translateY(-2px); border-color: #a855f7; background: rgba(30, 41, 59, 0.6); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body class="flex flex-col items-center p-4 sm:p-8 md:p-16">
+    <div class="w-full max-w-5xl mb-12">
+        <a href="index.html" class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors bg-slate-800/50 px-4 py-2 rounded-lg border border-slate-700/50">
+            <i class="fa-solid fa-arrow-left"></i> 메인으로 돌아가기
+        </a>
+    </div>
+    
+    <div class="text-center mb-12">
+        <div class="inline-block px-4 py-1 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-400 font-bold text-sm mb-4 shadow-lg shadow-purple-900/20">Frontend Management UI</div>
+        <h1 class="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">3. Admin Dashboard</h1>
+        <p class="text-slate-400 font-medium text-lg">상태 추적 및 동적 제어를 위한 통합 웹 애플리케이션 가이드</p>
+    </div>
+    
+    <div class="grid grid-cols-1 gap-6 w-full max-w-5xl">
+        <div class="card rounded-2xl p-5 sm:p-8 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
+            <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3"><i class="fa-solid fa-layer-group text-purple-400 bg-purple-400/10 p-2 rounded-lg"></i> 기술 스택 (Tech Stack)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-slate-300">
+                <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/30">
+                    <h4 class="font-bold text-white mb-2 flex items-center gap-2"><i class="fa-brands fa-react text-sky-400"></i> React 18 & Vite</h4>
+                    <p class="text-sm">컴포넌트 기반 UI 구성 및 매우 빠른 HMR(Hot Module Replacement) 지원.</p>
+                </div>
+                <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/30">
+                    <h4 class="font-bold text-white mb-2 flex items-center gap-2"><i class="fa-solid fa-paintbrush text-pink-400"></i> Tailwind CSS</h4>
+                    <p class="text-sm">유틸리티 클래스 기반으로 일관된 다크 테마 디자인 시스템을 신속하게 구축.</p>
+                </div>
+                <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/30">
+                    <h4 class="font-bold text-white mb-2 flex items-center gap-2"><i class="fa-solid fa-chart-pie text-amber-400"></i> Zustand / React Query</h4>
+                    <p class="text-sm">글로벌 상태 관리 및 서버 상태(API 데이터) 동기화, 캐싱 처리.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card rounded-2xl p-5 sm:p-8">
+            <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3"><i class="fa-solid fa-laptop-code text-purple-400 bg-purple-400/10 p-2 rounded-lg"></i> 코드 예시 (React Component)</h3>
+            <p class="text-slate-400 text-sm mb-4">특정 서비스의 트래픽 라우팅을 실시간으로 켜고 끄는 토글 컴포넌트입니다.</p>
+            <div class="bg-slate-900 rounded-xl border border-slate-700/50 p-4 overflow-x-auto">
+<pre><code class="text-pink-300 text-sm font-mono">import { useState } from 'react';
+import { api } from '@/lib/api'; // Axios instance
+
+export default function ServiceToggle({ domain, initialStatus }) {
+  const [isActive, setIsActive] = useState(initialStatus === 'active');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleToggle = async () => {
+    setIsLoading(true);
+    try {
+      const newStatus = isActive ? 'inactive' : 'active';
+      // Backend API 호출로 Gateway의 Redis 상태 실시간 변경
+      await api.patch(`/services/${domain}/status`, { status: newStatus });
+      setIsActive(!isActive);
+      // 토스트 알림: "Gateway 반영 완료"
+    } catch (error) {
+      console.error('Failed to update status');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    &lt;button 
+      onClick={handleToggle} disabled={isLoading}
+      className={`px-4 py-2 rounded-full font-bold ${isActive ? 'bg-emerald-500 text-white' : 'bg-slate-600 text-slate-300'}`}
+    &gt;
+      {isActive ? 'ON' : 'OFF'}
+    &lt;/button&gt;
+  );
+}
+</code></pre>
+            </div>
+        </div>
+
+        <div class="card rounded-2xl p-5 sm:p-8">
+            <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3"><i class="fa-solid fa-gears text-purple-400 bg-purple-400/10 p-2 rounded-lg"></i> 환경 변수 및 연동 (Configuration)</h3>
+            <p class="text-slate-400 text-sm mb-4">Vite를 위한 환경 변수(<code class="text-purple-300 bg-slate-900 px-1 rounded">.env</code>) 파일 예시입니다.</p>
+            <div class="bg-slate-900 rounded-xl border border-slate-700/50 p-4 overflow-x-auto">
+<pre><code class="text-sky-300 text-sm font-mono"># .env
+# Control Plane API 서버 주소 (모든 제어 명령의 목적지)
+VITE_API_BASE_URL=http://admin-api.gateway.local/api/v1
+
+# 모니터링 대시보드(Grafana) 임베드 URL
+VITE_GRAFANA_EMBED_URL=http://grafana.gateway.local/d-solo/metrics
+</code></pre>
+            </div>
+        </div>
+
+        <div class="card rounded-2xl p-5 sm:p-8 bg-slate-800/30 border-slate-600">
+            <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3"><i class="fa-solid fa-book text-slate-400 bg-slate-700/50 p-2 rounded-lg"></i> 개발 가이드 (Development Guide)</h3>
+            <ul class="space-y-4 text-slate-300 text-sm leading-relaxed">
+                <li class="flex items-start gap-3">
+                    <i class="fa-solid fa-chevron-right text-purple-400 mt-1"></i>
+                    <div><strong class="text-white">직관적인 피드백:</strong> 사용자가 설정을 변경하면(예: API 키 비활성화), Backend에 요청을 보내고 성공 응답을 받은 즉시 UI에 반영 알림을 주어 사용자 경험을 높이세요.</div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fa-solid fa-chevron-right text-purple-400 mt-1"></i>
+                    <div><strong class="text-white">Axios 인터셉터:</strong> 모든 Backend API 요청에 JWT 토큰을 자동으로 포함시키고, 401 에러 발생 시 자동으로 로그인 페이지로 라우팅하는 처리를 중앙화하세요.</div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fa-solid fa-chevron-right text-purple-400 mt-1"></i>
+                    <div><strong class="text-white">컴포넌트 재사용성:</strong> 폼, 모달, 버튼 등의 기본 UI 엘리먼트는 공통 컴포넌트로 분리하여 디자인 일관성을 유지하세요.</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

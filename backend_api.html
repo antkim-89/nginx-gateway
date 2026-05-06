@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2. Backend Admin API | Master Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; }
+        .card { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+        .card:hover { transform: translateY(-2px); border-color: #3b82f6; background: rgba(30, 41, 59, 0.6); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body class="flex flex-col items-center p-4 sm:p-8 md:p-16">
+    <div class="w-full max-w-5xl mb-12">
+        <a href="index.html" class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors bg-slate-800/50 px-4 py-2 rounded-lg border border-slate-700/50">
+            <i class="fa-solid fa-arrow-left"></i> 메인으로 돌아가기
+        </a>
+    </div>
+    
+    <div class="text-center mb-12">
+        <div class="inline-block px-4 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-400 font-bold text-sm mb-4 shadow-lg shadow-blue-900/20">Control Plane (제어 평면)</div>
+        <h1 class="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">2. Backend Admin API</h1>
+        <p class="text-slate-400 font-medium text-lg">Gateway 제어를 위한 API 서버 기술 스택 및 연동 가이드</p>
+    </div>
+    
+    <div class="grid grid-cols-1 gap-6 w-full max-w-5xl">
+        <div class="card rounded-2xl p-5 sm:p-8 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+            <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3"><i class="fa-solid fa-cubes text-blue-400 bg-blue-400/10 p-2 rounded-lg"></i> 기술 스택 (Tech Stack)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-slate-300">
+                <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/30">
+                    <h4 class="font-bold text-white mb-2 flex items-center gap-2"><i class="fa-brands fa-node-js text-green-500"></i> Node.js (Express/NestJS) 또는 Go</h4>
+                    <p class="text-sm">관리자 요청을 처리하고 비즈니스 로직(보안, 라우팅 관리)을 수행하는 백엔드 서버입니다.</p>
+                </div>
+                <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/30">
+                    <h4 class="font-bold text-white mb-2 flex items-center gap-2"><i class="fa-solid fa-database text-red-400"></i> Redis (ioredis / go-redis)</h4>
+                    <p class="text-sm">Gateway(L2)가 바라보는 데이터 저장소에 API를 통해 실시간으로 상태를 업데이트합니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card rounded-2xl p-5 sm:p-8">
+            <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3"><i class="fa-solid fa-laptop-code text-blue-400 bg-blue-400/10 p-2 rounded-lg"></i> 코드 예시 (Service API)</h3>
+            <p class="text-slate-400 text-sm mb-4">Express.js를 사용하여 신규 서비스를 Redis에 등록하는 예시입니다.</p>
+            <div class="bg-slate-900 rounded-xl border border-slate-700/50 p-4 overflow-x-auto">
+<pre><code class="text-amber-300 text-sm font-mono">// src/controllers/serviceController.js
+const Redis = require('ioredis');
+const redis = new Redis(process.env.REDIS_URL);
+
+exports.addService = async (req, res) => {
+    try {
+        const { domain, targetUrl } = req.body;
+        const redisKey = `gw:services:${domain}`;
+        
+        // Redis Hash 형태로 서비스 정보 저장
+        await redis.hmset(redisKey, {
+            'target': targetUrl,
+            'status': 'active',
+            'created_at': Date.now()
+        });
+        
+        // 동적 갱신 완료 응답
+        res.status(201).json({ 
+            success: true, 
+            message: 'Service registered and applied to gateway', 
+            data: { domain, targetUrl } 
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+</code></pre>
+            </div>
+        </div>
+
+        <div class="card rounded-2xl p-5 sm:p-8">
+            <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3"><i class="fa-solid fa-gears text-blue-400 bg-blue-400/10 p-2 rounded-lg"></i> 환경 변수 및 연동 (Configuration)</h3>
+            <p class="text-slate-400 text-sm mb-4">백엔드 서버 구동 시 필요한 설정값(<code class="text-blue-300 bg-slate-900 px-1 rounded">.env</code>) 예시입니다.</p>
+            <div class="bg-slate-900 rounded-xl border border-slate-700/50 p-4 overflow-x-auto">
+<pre><code class="text-green-300 text-sm font-mono"># .env
+PORT=3000
+NODE_ENV=production
+
+# Redis 연동 (Gateway가 바라보는 동일한 Redis Cluster)
+REDIS_URL=redis://redis-cluster:6379
+
+# JWT / Auth 설정
+JWT_SECRET=super_secret_admin_key
+ADMIN_API_KEY=admin_master_key_123
+
+# CORS (대시보드 허용)
+ALLOWED_ORIGIN=http://admin-dashboard.local
+</code></pre>
+            </div>
+        </div>
+
+        <div class="card rounded-2xl p-5 sm:p-8 bg-slate-800/30 border-slate-600">
+            <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3"><i class="fa-solid fa-book text-slate-400 bg-slate-700/50 p-2 rounded-lg"></i> 개발 가이드 (Development Guide)</h3>
+            <ul class="space-y-4 text-slate-300 text-sm leading-relaxed">
+                <li class="flex items-start gap-3">
+                    <i class="fa-solid fa-chevron-right text-blue-400 mt-1"></i>
+                    <div><strong class="text-white">API 명세화:</strong> Swagger(OpenAPI)를 사용하여 API 문서를 자동화하고, 프론트엔드 팀과 규약을 명확히 맞추세요.</div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fa-solid fa-chevron-right text-blue-400 mt-1"></i>
+                    <div><strong class="text-white">보안 강화:</strong> 모든 API 엔드포인트에 인증(JWT 또는 API Key) 미들웨어를 반드시 부착하여 무단 접근을 방지하세요.</div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fa-solid fa-chevron-right text-blue-400 mt-1"></i>
+                    <div><strong class="text-white">트랜잭션:</strong> 여러 Redis 키를 동시에 업데이트해야 하는 경우 Lua Script(EVAL)나 MULTI/EXEC를 통해 원자성(Atomicity)을 보장하세요.</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
