@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next-Gen Dynamic Gateway System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; }
+        .card { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+        .card:hover { transform: translateY(-4px); background: rgba(30, 41, 59, 0.8); }
+        .hover-emerald:hover { border-color: #10b981; }
+        .hover-blue:hover { border-color: #3b82f6; }
+        .hover-purple:hover { border-color: #a855f7; }
+        .hover-amber:hover { border-color: #f59e0b; }
+        .hover-slate:hover { border-color: #94a3b8; }
+    </style>
+</head>
+<body class="flex flex-col items-center p-4 sm:p-8 md:p-16">
+    <div class="text-center mb-16">
+        <div class="inline-block px-4 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 font-bold text-sm mb-6 shadow-lg shadow-slate-900/50">시스템 아키텍처 문서</div>
+        <h1 class="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Next-Gen Dynamic Gateway</h1>
+        <p class="text-slate-400 font-medium text-lg">기술 스택, 개발 가이드 및 모듈 연동 명세서</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
+        <a href="gateway_lua.html" class="card hover-emerald rounded-2xl p-5 sm:p-8 flex flex-col gap-4 cursor-pointer relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-emerald-500/20 transition-all"></div>
+            <div class="flex items-center gap-4 relative z-10">
+                <i class="fa-solid fa-bolt text-4xl text-emerald-400 bg-emerald-400/10 p-4 rounded-xl shadow-lg shadow-emerald-900/20"></i>
+                <div>
+                    <h2 class="text-2xl font-bold text-white">1. Gateway Engine</h2>
+                    <p class="text-emerald-400/80 text-sm font-semibold">OpenResty & Lua Data Plane</p>
+                </div>
+            </div>
+            <p class="text-slate-400 mt-2 relative z-10">실시간 트래픽 처리, 인증, Rate Limit, Dynamic Routing을 수행하는 핵심 게이트웨이 엔진.</p>
+        </a>
+
+        <a href="backend_api.html" class="card hover-blue rounded-2xl p-5 sm:p-8 flex flex-col gap-4 cursor-pointer relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-blue-500/20 transition-all"></div>
+            <div class="flex items-center gap-4 relative z-10">
+                <i class="fa-solid fa-server text-4xl text-blue-400 bg-blue-400/10 p-4 rounded-xl shadow-lg shadow-blue-900/20"></i>
+                <div>
+                    <h2 class="text-2xl font-bold text-white">2. Control Plane API</h2>
+                    <p class="text-blue-400/80 text-sm font-semibold">Backend Admin Service</p>
+                </div>
+            </div>
+            <p class="text-slate-400 mt-2 relative z-10">라우팅 정책, API Key, 서비스 설정을 관리하고 상태 저장소(Redis)와 동기화하는 백엔드 서버.</p>
+        </a>
+
+        <a href="frontend_dashboard.html" class="card hover-purple rounded-2xl p-5 sm:p-8 flex flex-col gap-4 cursor-pointer relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-purple-500/20 transition-all"></div>
+            <div class="flex items-center gap-4 relative z-10">
+                <i class="fa-solid fa-display text-4xl text-purple-400 bg-purple-400/10 p-4 rounded-xl shadow-lg shadow-purple-900/20"></i>
+                <div>
+                    <h2 class="text-2xl font-bold text-white">3. Admin Dashboard</h2>
+                    <p class="text-purple-400/80 text-sm font-semibold">Frontend Management UI</p>
+                </div>
+            </div>
+            <p class="text-slate-400 mt-2 relative z-10">시스템 모니터링, 실시간 설정 변경 및 운영을 위한 직관적인 관리자용 웹 대시보드.</p>
+        </a>
+
+        <a href="sre_devops.html" class="card hover-amber rounded-2xl p-5 sm:p-8 flex flex-col gap-4 cursor-pointer relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-amber-500/20 transition-all"></div>
+            <div class="flex items-center gap-4 relative z-10">
+                <i class="fa-solid fa-network-wired text-4xl text-amber-400 bg-amber-400/10 p-4 rounded-xl shadow-lg shadow-amber-900/20"></i>
+                <div>
+                    <h2 class="text-2xl font-bold text-white">4. Observability & Infra</h2>
+                    <p class="text-amber-400/80 text-sm font-semibold">SRE & DevOps</p>
+                </div>
+            </div>
+            <p class="text-slate-400 mt-2 relative z-10">Prometheus, Grafana 기반의 모니터링 환경 및 Docker 기반의 시스템 인프라 배포 구성.</p>
+        </a>
+        
+        <a href="gateway.html" class="card hover-slate rounded-2xl p-5 sm:p-8 flex flex-col items-center justify-center gap-4 cursor-pointer col-span-1 md:col-span-2 bg-slate-800/30 text-center relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-slate-700/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+            <i class="fa-solid fa-sitemap text-4xl text-slate-300 mb-2"></i>
+            <h2 class="text-2xl font-bold text-white">System Architecture Blueprint</h2>
+            <p class="text-slate-400">전체 시스템 아키텍처 다이어그램 보기 (gateway.html)</p>
+        </a>
+    </div>
+
+    <style>
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</body>
+</html>
